@@ -1,5 +1,6 @@
 export {};
 
 module.exports = {
-    User: require('./UserController')
+    User: require('./UserController'),
+    Funko: require('./FunkoController')
 }

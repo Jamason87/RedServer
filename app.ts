@@ -13,6 +13,7 @@ app.use(require('./middleware/headers'));
 app.use(bodyParser.json())
 
 app.use('/user', controllers.User)
+app.use('/funko', controllers.Funko)
 
 db.authenticate()
     .then(() => db.sync({ alter: true})) // TODO: Remove alter true

@@ -1,5 +1,6 @@
 export {};
 
 module.exports = {
-    User: require('./UserModel')
+    User: require('./UserModel'),
+    Funko: require('./FunkoModel')
 };
