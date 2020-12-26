@@ -2,5 +2,6 @@ export {};
 
 module.exports = {
     User: require('./UserController'),
-    Funko: require('./FunkoController')
+    Funko: require('./FunkoController'),
+    Collection: require('./CollectionController')
 }

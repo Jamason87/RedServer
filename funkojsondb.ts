@@ -30,7 +30,7 @@ fs.readFile("./funko_pop.json", "utf8", (err, data) => {
             series: funko.series
           })
         } catch (error) {
-          console.log('this fucked up')
+          console.log('Something went wrong')
         }
       })
     })

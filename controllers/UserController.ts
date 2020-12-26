@@ -1,7 +1,7 @@
-export {};
+export { };
 
 const router = require('express').Router();
-const { User } = require('../models');
+const { User, Collection } = require('../models');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
@@ -17,7 +17,7 @@ router.get('/auth', validateSession, (req, res) => {
 
 //* REGISTER USER
 router.post('/register', async (req, res) => {
-    let {email, username, password} = req.body;
+    let { email, username, password } = req.body;
 
     try {
         const newUser = await User.create({
@@ -27,7 +27,15 @@ router.post('/register', async (req, res) => {
             isAdmin: false
         })
 
-        const token = jwt.sign({id: newUser.id}, process.env.JWT_SECRET, {expiresIn: 60 * 60 * 24});
+        Collection.create({
+            owner_ID: newUser.id,
+            name: 'wishlist',
+            description: 'wishlist',
+            wishlist: true,
+            funkos: []
+        })
+
+        const token = jwt.sign({ id: newUser.id }, process.env.JWT_SECRET, { expiresIn: 60 * 60 * 24 });
 
         res.status(201).json({
             token: token
@@ -48,17 +56,17 @@ router.post('/register', async (req, res) => {
 
 router.post('/login', async (req, res) => {
 
-    let {username, password} = req.body;
+    let { username, password } = req.body;
 
     try {
         let loginUser = await User.findOne({
-            where: {username}
+            where: { username }
         })
 
         console.log('hi')
 
-        if(loginUser && await bcrypt.compare(password, loginUser.password)) {
-            const token = jwt.sign({id: loginUser.id}, process.env.JWT_SECRET, {expiresIn: 60 * 60 * 24})
+        if (loginUser && await bcrypt.compare(password, loginUser.password)) {
+            const token = jwt.sign({ id: loginUser.id }, process.env.JWT_SECRET, { expiresIn: 60 * 60 * 24 })
 
             res.status(200).json({
                 token

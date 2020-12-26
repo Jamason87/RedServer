@@ -14,6 +14,7 @@ app.use(bodyParser.json())
 
 app.use('/user', controllers.User)
 app.use('/funko', controllers.Funko)
+app.use('/collection', controllers.Collection)
 
 db.authenticate()
     .then(() => db.sync({ alter: true})) // TODO: Remove alter true
