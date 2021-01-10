@@ -9,7 +9,7 @@ const { Op } = require('sequelize');
 const validateSession = require('../middleware/validateSession')
 
 //CREATE
-router.post('/create', validateSession, (req, res) => {
+router.post('/create', validateSession, (req: any, res: any) => {
     if (req.user.isAdmin) {
         let {handle, title, imageName, series} = req.body;
 
@@ -18,7 +18,7 @@ router.post('/create', validateSession, (req, res) => {
             title,
             imageName,
             series
-        }).then((data) => {
+        }).then((data: any) => {
             res.status(200).json({
                 message: 'Success',
                 data: data
@@ -32,8 +32,8 @@ router.post('/create', validateSession, (req, res) => {
 });
 
 //READ
-router.get('/:id', (req, res) => {
-    Funko.findByPk(req.params.id).then((funko) => {
+router.get('/:id', (req: any, res: any) => {
+    Funko.findByPk(req.params.id).then((funko: any) => {
         if (funko) {
             res.status(200).json({
                 data: funko
@@ -44,14 +44,14 @@ router.get('/:id', (req, res) => {
             })
         }
     })
-    .catch((err) => {
+    .catch((err: any) => {
         res.status(500).json({
             message: 'Server issue'
         })
     })
 });
 
-router.post('/search', (req, res) => {
+router.post('/search', (req: any, res: any) => {
     let query = req.body.query;
     let page = req.body.page;
     let maxResults = req.body.maxResults;
@@ -65,12 +65,12 @@ router.post('/search', (req, res) => {
         limit: maxResults,
         offset: (page - 1) * maxResults
     })
-        .then(data => {
+        .then((data: any) => {
             res.status(200).json({
                 data
             })
         })
-        .catch((err) => {
+        .catch((err: any) => {
             res.status(500).json({
                 message: 'Server issue'
             })
@@ -78,7 +78,7 @@ router.post('/search', (req, res) => {
 });
 
 //UPDATE
-router.post('/update/:id', validateSession, (req, res) => {
+router.post('/update/:id', validateSession, (req: any, res: any) => {
     if (req.user.isAdmin) {
         let {handle, title, imageName, series} = req.body;
 
@@ -102,7 +102,7 @@ router.post('/update/:id', validateSession, (req, res) => {
 });
 
 //DELETE
-router.get('/delete/:id', validateSession, (req, res) => {
+router.get('/delete/:id', validateSession, (req: any, res: any) => {
     if (req.user.isAdmin) {
         let {handle, title, imageName, series} = req.body;
 

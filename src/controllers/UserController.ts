@@ -9,14 +9,14 @@ const validateSession = require('../middleware/validateSession')
 
 const { UniqueConstraintError } = require('sequelize/lib/errors');
 
-router.get('/auth', validateSession, (req, res) => {
+router.get('/auth', validateSession, (req: any, res: any) => {
     res.status(200).json({
         message: "You can see this if you are logged in."
     })
 })
 
 //* REGISTER USER
-router.post('/register', async (req, res) => {
+router.post('/register', async (req: any, res: any) => {
     let { email, username, password } = req.body;
 
     try {
@@ -54,7 +54,7 @@ router.post('/register', async (req, res) => {
 });
 
 
-router.post('/login', async (req, res) => {
+router.post('/login', async (req: any, res: any) => {
 
     let { username, password } = req.body;
 

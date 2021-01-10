@@ -3,7 +3,7 @@ export { };
 const router = require('express').Router();
 const { Collection } = require('../models');
 
-router.post('/addItem', async (req, res) => {
+router.post('/addItem', async (req: any, res: any) => {
     let wishlist = await Collection.findOne({
         where: {
             wishlist: true,

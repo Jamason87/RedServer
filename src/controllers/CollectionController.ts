@@ -6,7 +6,7 @@ const { Collection } = require('../models');
 const validateSession = require('../middleware/validateSession')
 
 //CREATE
-router.post('/create', validateSession, (req, res) => {
+router.post('/create', validateSession, (req: any, res: any) => {
     let owner_ID = req.user.id;
 
     let { name, description } = req.body;
@@ -26,9 +26,9 @@ router.post('/create', validateSession, (req, res) => {
 });
 
 //READ
-router.get('/id/:id', (req, res) => {
+router.get('/id/:id', (req: any, res: any) => {
     Collection.findByPk(req.params.id)
-        .then((data) => {
+        .then((data: any) => {
             if (data) {
                 res.status(200).json({
                     data
@@ -42,7 +42,7 @@ router.get('/id/:id', (req, res) => {
 });
 
 //GET ALL COLLECTIONS FOR USER
-router.post('/user', validateSession, (req, res) => {
+router.post('/user', validateSession, (req: any, res: any) => {
     let page = req.body.page;
     let maxResults = req.body.maxResults;
     let ignoreLimits = req.body.ignoreLimits || false
@@ -55,7 +55,7 @@ router.post('/user', validateSession, (req, res) => {
         limit: (ignoreLimits) ? 10000 : maxResults,
         offset: (ignoreLimits)? 0 : (page - 1) * maxResults
     })
-        .then((data) => {
+        .then((data: any) => {
             if (data) {
                 res.status(200).json({
                     data
@@ -68,7 +68,7 @@ router.post('/user', validateSession, (req, res) => {
         })
 });
 
-router.post('/user/:id', (req, res) => {
+router.post('/user/:id', (req: any, res: any) => {
     let page = req.body.page;
     let maxResults = req.body.maxResults;
 
@@ -80,7 +80,7 @@ router.post('/user/:id', (req, res) => {
         limit: maxResults,
         offset: (page - 1) * maxResults
     })
-        .then((data) => {
+        .then((data: any) => {
             if (data) {
                 res.status(200).json({
                     data
@@ -94,7 +94,7 @@ router.post('/user/:id', (req, res) => {
 });
 
 //UPDATE
-router.post('/update', validateSession, async (req, res) => {
+router.post('/update', validateSession, async (req: any, res: any) => {
     let { collectionId, name, description, funkos } = req.body;
 
     let collection = await Collection.findOne({
@@ -128,7 +128,7 @@ router.post('/update', validateSession, async (req, res) => {
 })
 
 //DELTE
-router.get('/delete/:id', validateSession, async (req, res) => {
+router.get('/delete/:id', validateSession, async (req: any, res: any) => {
     let collection = await Collection.findOne({
         where: {
             id: req.params.id
@@ -163,7 +163,7 @@ router.get('/delete/:id', validateSession, async (req, res) => {
 })
 
 //WISHLIST READ
-router.get('/wishlist', validateSession, async (req, res) => {
+router.get('/wishlist', validateSession, async (req: any, res: any) => {
     let wishlist = await Collection.findOne({
         where: {
             owner_ID: req.user.id,

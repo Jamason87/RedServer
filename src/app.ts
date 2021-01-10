@@ -23,7 +23,7 @@ db.authenticate()
     .then(() => {
         app.listen(process.env.PORT, () => console.log(`[Server: ] App is listening on Port ${process.env.PORT}`));
     })
-    .catch((err) => {
+    .catch((err: any) => {
         console.log("[Server: ] Could not connect to database.");
         console.log(err)
     })

@@ -2,7 +2,7 @@ const jwt = require('jsonwebtoken');
 const { authenticate } = require('../db');
 const { User } = require('../models');
 
-const validateSession = (req, res, next) => {
+const validateSession = (req: any, res: any, next: any) => {
     if (req.method === 'OPTIONS') {
         return next ();
     } else if (req.headers.authorization) {
@@ -14,7 +14,7 @@ const validateSession = (req, res, next) => {
             User.findOne({
                 where: {id: payload.id} // this finds user whose id matches the id that was assigned upon login
             })
-            .then(user => {
+            .then((user: any) => {
                 req.user = user;
                 next()
             })
