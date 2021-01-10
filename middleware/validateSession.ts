@@ -25,7 +25,7 @@ const validateSession = (req, res, next) => {
         }
     } else {
         res.status(401).json({
-            message: "Not Authorized."
+            message: "Not authorized."
         })
     }
 }

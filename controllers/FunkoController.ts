@@ -1,7 +1,10 @@
+
+
 export {};
 
 const router = require('express').Router();
 const { Funko } = require('../models');
+const { Op } = require('sequelize');
 
 const validateSession = require('../middleware/validateSession')
 
@@ -30,16 +33,42 @@ router.post('/create', validateSession, (req, res) => {
 
 //READ
 router.get('/:id', (req, res) => {
-        Funko.findByPk(req.params.id).then((funko) => {
-            if (funko) {
-                res.status(200).json({
-                    data: funko
-                })
-            } else {
-                res.status(404).json({
-                    message: 'Could not find funko for id ' + req.params.id
-                })
+    Funko.findByPk(req.params.id).then((funko) => {
+        if (funko) {
+            res.status(200).json({
+                data: funko
+            })
+        } else {
+            res.status(404).json({
+                message: 'Could not find funko for id ' + req.params.id
+            })
+        }
+    })
+    .catch((err) => {
+        res.status(500).json({
+            message: 'Server issue'
+        })
+    })
+});
+
+router.post('/search', (req, res) => {
+    let query = req.body.query;
+    let page = req.body.page;
+    let maxResults = req.body.maxResults;
+
+    Funko.findAndCountAll({
+        where: {
+            title: {
+                [Op.iLike]: `%${query}%`
             }
+        },
+        limit: maxResults,
+        offset: (page - 1) * maxResults
+    })
+        .then(data => {
+            res.status(200).json({
+                data
+            })
         })
         .catch((err) => {
             res.status(500).json({

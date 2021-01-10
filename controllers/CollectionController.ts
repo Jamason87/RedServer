@@ -26,7 +26,7 @@ router.post('/create', validateSession, (req, res) => {
 });
 
 //READ
-router.get('/:id', (req, res) => {
+router.get('/id/:id', (req, res) => {
     Collection.findByPk(req.params.id)
         .then((data) => {
             if (data) {
@@ -37,6 +37,58 @@ router.get('/:id', (req, res) => {
                 res.status(404).json({
                     message: 'Could not find a collection with the id ' + req.params.id
                 })
+            }
+        })
+});
+
+//GET ALL COLLECTIONS FOR USER
+router.post('/user', validateSession, (req, res) => {
+    let page = req.body.page;
+    let maxResults = req.body.maxResults;
+    let ignoreLimits = req.body.ignoreLimits || false
+
+    Collection.findAndCountAll({
+        where: {
+            owner_ID: req.user.id,
+            wishlist: false
+        },
+        limit: (ignoreLimits) ? 10000 : maxResults,
+        offset: (ignoreLimits)? 0 : (page - 1) * maxResults
+    })
+        .then((data) => {
+            if (data) {
+                res.status(200).json({
+                    data
+                });
+            } else {
+                res.status(404).json({
+                    message: "Could not find any collections for user."
+                });
+            }
+        })
+});
+
+router.post('/user/:id', (req, res) => {
+    let page = req.body.page;
+    let maxResults = req.body.maxResults;
+
+    Collection.findAndCountAll({
+        where: {
+            owner_ID: req.params.id,
+            wishlist: false
+        },
+        limit: maxResults,
+        offset: (page - 1) * maxResults
+    })
+        .then((data) => {
+            if (data) {
+                res.status(200).json({
+                    data
+                });
+            } else {
+                res.status(404).json({
+                    message: "Could not find any collections for user."
+                });
             }
         })
 });
@@ -76,7 +128,7 @@ router.post('/update', validateSession, async (req, res) => {
 })
 
 //DELTE
-router.get('/delete/:id',validateSession, async (req,res) => {
+router.get('/delete/:id', validateSession, async (req, res) => {
     let collection = await Collection.findOne({
         where: {
             id: req.params.id
@@ -111,6 +163,17 @@ router.get('/delete/:id',validateSession, async (req,res) => {
 })
 
 //WISHLIST READ
+router.get('/wishlist', validateSession, async (req, res) => {
+    let wishlist = await Collection.findOne({
+        where: {
+            owner_ID: req.user.id,
+            wishlist: true
+        }
+    })
 
+    res.status(200).json({
+        wishlist
+    })
+});
 
 module.exports = router;
