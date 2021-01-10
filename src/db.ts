@@ -2,8 +2,14 @@ export {};
 
 const { Sequelize } = require('sequelize');
 
-const database = new Sequelize(process.env.DB_CONNECTION_STRING, {
-    dialect: 'postgres'
+const database = new Sequelize(process.env.DATABASE_URL, {
+    dialect: 'postgres',
+    dialectOptions: {
+        ssl: {
+            require: true,
+            rejectUnauthorized: false
+        }
+    }
 });
 
 module.exports = database;
