@@ -31,25 +31,6 @@ router.post('/create', validateSession, (req: any, res: any) => {
     }
 });
 
-//READ
-router.get('/:id', (req: any, res: any) => {
-    Funko.findByPk(req.params.id).then((funko: any) => {
-        if (funko) {
-            res.status(200).json({
-                data: funko
-            })
-        } else {
-            res.status(404).json({
-                message: 'Could not find funko for id ' + req.params.id
-            })
-        }
-    })
-    .catch((err: any) => {
-        res.status(500).json({
-            message: 'Server issue'
-        })
-    })
-});
 
 router.post('/search', (req: any, res: any) => {
     let query = req.body.query;
@@ -119,5 +100,37 @@ router.get('/delete/:id', validateSession, (req: any, res: any) => {
     }
 });
 
+router.post('/getall', (req:any, res:any) => {
+    let funkoIds = req.body.funkoIds;
+
+    Funko.findAll({where: {
+        id: funkoIds
+    }})
+        .then((funkos: any) => {
+            res.status(200).json({
+                funkos
+            })
+        })
+})
+
+//READ
+router.get('/:id', (req: any, res: any) => {
+    Funko.findByPk(req.params.id).then((funko: any) => {
+        if (funko) {
+            res.status(200).json({
+                data: funko
+            })
+        } else {
+            res.status(404).json({
+                message: 'Could not find funko for id ' + req.params.id
+            })
+        }
+    })
+    .catch((err: any) => {
+        res.status(500).json({
+            message: 'Server issue'
+        })
+    })
+});
 
 module.exports = router;

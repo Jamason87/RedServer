@@ -95,14 +95,17 @@ router.post('/user/:id', (req: any, res: any) => {
 
 //UPDATE
 router.post('/update', validateSession, async (req: any, res: any) => {
-    let { collectionId, name, description, funkos } = req.body;
+    let { collectionId, name, description } = req.body;
 
     let collection = await Collection.findOne({
         where: {
             id: collectionId
         }
     })
+    
+    let funkos = req.body.funkos.map((f: string) => parseInt(f));
 
+    console.log(collectionId, name, description, funkos)
     if (collection) {
         if (req.user.isAdmin || collection.owner_ID == req.user.id) {
             collection.name = name;

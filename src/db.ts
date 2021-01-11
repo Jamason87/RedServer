@@ -5,10 +5,10 @@ const { Sequelize } = require('sequelize');
 const database = new Sequelize(process.env.DATABASE_URL, {
     dialect: 'postgres',
     dialectOptions: {
-        ssl: {
+        /*ssl: {
             require: true,
             rejectUnauthorized: false
-        }
+        }*/
     }
 });
 
