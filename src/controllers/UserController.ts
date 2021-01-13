@@ -11,8 +11,100 @@ const { UniqueConstraintError } = require('sequelize/lib/errors');
 
 router.get('/auth', validateSession, (req: any, res: any) => {
     res.status(200).json({
-        message: "You can see this if you are logged in."
+        message: "You can see this if you are logged in.",
+        isAdmin: req.user.isAdmin
     })
+});
+
+router.post('/update', validateSession, async (req: any, res: any) => {
+    if (req.user.isAdmin) {
+        let user = await User.findOne({
+            where: {
+                id: req.body.id
+            }
+        })
+
+        user.isAdmin = req.body.isAdmin
+
+        await user.save();
+
+        res.status(200).json({
+            message: "User updated"
+        })
+    } else {
+        res.status(401).json({
+            message: 'You are not permitted to do this'
+        })
+    }
+});
+
+router.get('/id/:id', validateSession, async (req: any, res: any) => {
+    if (req.user.isAdmin) {
+        User.findOne({
+            where: {
+                id: req.params.id
+            }
+        })
+            .then((user: any) => {
+                Collection.findAll({
+                    where: {
+                        owner_ID: req.params.id
+                    }
+                })
+                    .then((collections: any) => {
+                        res.status(200).json({user, collections})
+                    })
+            })
+    } else {
+        res.status(401).json({
+            message: 'You are not permitted to do this'
+        })
+    }
+})
+
+router.get('/delete/:id', validateSession, async (req: any, res: any) => {
+    if (req.user.isAdmin) {
+        let user = await User.findOne({
+            where: {
+                id: req.params.id
+            }
+        })
+
+        if (req.user.id !== user.id) {
+            await user.destroy()
+            await user.save()
+
+            res.status(200).json({
+                message: "User has been deleted."
+            })
+        } else {
+            res.status(401).json({
+                message: "You cannot delete your own account!"
+            })
+        }
+    } else {
+        res.status(401).json({
+            message: 'You are not permitted to do this'
+        })
+    }
+})
+
+router.post('/all', validateSession, (req: any, res: any) => {
+    if (req.user.isAdmin) {
+        let page = req.body.page;
+
+        User.findAndCountAll({
+            offset: (page-1) * 10,
+            limit: 10
+        })
+            .then((data: any) => {
+                res.status(200).json(data);
+            })
+    } else {
+        res.status(401).json({
+            message: "You are not permitted to do this."
+        })
+    }
 })
 
 //* REGISTER USER
